@@ -32,9 +32,9 @@ class PartyRequestHandler(tornado.web.RequestHandler):
             self.data["votes"].append(self.request.remote_ip)
             if (len(self.data["votes"]) == self.requiredVotes):
                 self.core.playback.next()
-                self.write("Skipping...")
+                self.write("Changement de musique...")
             else:
-                self.write("Vous avez voté pour passer cette musique. ("+str(self.requiredVotes-len(self.data["votes"]))+" Votes nécessaires)")
+                self.write("Vous avez vote pour passer cette musique. ("+str(self.requiredVotes-len(self.data["votes"]))+" Votes necessaires)")
 
 
 
