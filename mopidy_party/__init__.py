@@ -37,7 +37,7 @@ class PartyRequestHandler(tornado.web.RequestHandler):
         
     if (self.dejaVote == 1): # L'utilisateur a deja vote
             self.write("Vous avez deja vote pour passer cette chanson !")
-        else: # le vote est valide
+    else: # le vote est valide
             self.data["votes_positif"].append(self.request.remote_ip)
             self.data["votes_negatif"].append(self.request.remote_ip)
             if ((len(self.data["votes_positif"]- len(self.data["votes_negatif"])) == 0):
