@@ -32,7 +32,7 @@ class PartyRequestHandler(tornado.web.RequestHandler):
     if (self.request.remote_ip in self.data["votes_positif"]):  #on verifie si l'utilisateur a deja fait un vote positif
         self.dejaVote = 1
         
-    if self.request.remote_ip in self.data["votes_negatif"]): #on verifie si l'utilisateur a deja fait un vote negatif
+    if (self.request.remote_ip in self.data["votes_negatif"]): #on verifie si l'utilisateur a deja fait un vote negatif
         self.dejaVote = 1
         
     if (self.dejaVote == 1): # L'utilisateur a deja vote
