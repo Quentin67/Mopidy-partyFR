@@ -21,8 +21,11 @@
           <button type="button" class="btn" ng-click="togglePause()" ng-disabled="!ready" ng-class="{'btn-success' : currentState.paused, 'btn-danger': !currentState.paused}">
             <span class="glyphicon glyphicon-pause" ng-class="{'glyphicon-play': currentState.paused, 'glyphicon-pause' : !currentState.paused}"></span>
           </button>
-          <button type="button" class="btn btn-primary" ng-click="nextTrack()" ng-disabled="!ready">
-            <span class="glyphicon glyphicon-fast-forward"></span>
+          <button type="button" class="btn btn-primary" ng-click="vote_negatif()" ng-disabled="!ready">
+            <span class="glyphicons glyphicons-thumbs-down"></span>
+          </button>
+          <button type="button" class="btn" class="btn btn-primary" ng-click="vote_positif()" ng-disable="!ready">
+            <span class="glyphicons glyphicons-thumbs-up"></span>
           </button>
           <p><small>
             <span class="glyphicon glyphicon-equalizer" ng-if="currentState.length  >  0"></span>

@@ -155,11 +155,18 @@ angular.module('partyApp', [])
     .done();
   };
 
-  $scope.nextTrack = function(){
+  $scope.vote_negatif = function(){
     var xmlHttp = new XMLHttpRequest();
-    xmlHttp.open( "GET", "/party/vote", false ); // false for synchronous request
+    xmlHttp.open( "GET", "/party/votes_negatif", false ); // false for synchronous request
     xmlHttp.send( null );
     $scope.message = ['success', xmlHttp.responseText];
     $scope.$apply();
   };
+  $scope.vote_positif = function(){
+      var xmlHttp = new XMLHttpRequest();
+      xmlHttp.open( "GET", "/party/votes_positif", false);
+      xmlHttp.send( null);
+      $scope.message = ['success', xmlHttp.responseText],
+      $scope.$apply();
+  };   
 });
