@@ -13,46 +13,36 @@ class PartyRequestHandler(tornado.web.RequestHandler):
 
     def initialize(self, core, data, config):
         self.core = core
-        self.data = data
+        self.dataPositif = dataPositif
        # self.requiredVotes = config["party"]["votes_to_skip"]
-        #self.requiredVotes = 3        
-        self.dejaVote = 0
-        
+        self.requiredVotes = 3        
+    
     def get(self):
         currentTrack = self.core.playback.get_current_track().get()
         if (currentTrack == None): return
         currentTrackURI = currentTrack.uri
 
         # If the current track is different to the one stored, clear votes
-        if (currentTrackURI != self.data["track"]):
-            self.data["track"] = currentTrackURI
-            self.data["votes_positif"] = []
-            self.data["votes_negatif"] = []
+        if (currentTrackURI != self.dataPositif["track"]):
+            self.dataPositif["track"] = currentTrackURI
+            self.dataPositif["votes_positifs"] = []
 
-    if (self.request.remote_ip in self.data["votes_positif"]):  #on verifie si l'utilisateur a deja fait un vote positif
-        self.dejaVote = 1
-        
-    if (self.request.remote_ip in self.data["votes_negatif"]): #on verifie si l'utilisateur a deja fait un vote negatif
-        self.dejaVote = 1
-        
-    if (self.dejaVote == 1): # L'utilisateur a deja vote
+        if (self.request.remote_ip in self.dataPositif["votes_positifs"]): # L'utilisateur a deja vote
             self.write("Vous avez deja vote pour passer cette chanson !")
-    else: # le vote est valide
-            self.data["votes_positif"].append(self.request.remote_ip)
-            self.data["votes_negatif"].append(self.request.remote_ip)
-            if ((len(self.data["votes_positif"]- len(self.data["votes_negatif"])) == 0):
+        else: # le vote est valide
+            self.dataPositif["votes_positifs"].append(self.request.remote_ip)
+            if (len(self.dataPositif["votes_positifs"]) == self.requiredVotes):
                 self.core.playback.next()
                 self.write("Changement de musique...")
             else:
-                self.write("Vous avez vote pour passer cette musique")
+                self.write("Vous avez vote pour passer cette musique.")
 
 
 
 def party_factory(config, core):
-    data = {'track':"", 'votes_positif', 'votes_negatif':[]}
+    dataPositif = {'track':"", 'votes_positifs':[]}
     return [
-    ('/votes_negatif', PartyRequestHandler, {'core': core, 'data':data, 'config':config})
-    ('/votes-positif', PartyRequestHandler, {'core': core, 'data': data, 'config': config})
+    ('/vote_positif', PartyRequestHandler, {'core': core, 'data':data, 'config':config})
     ]
 
 
