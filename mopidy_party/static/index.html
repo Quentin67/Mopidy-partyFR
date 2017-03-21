@@ -1,76 +1,166 @@
 <!doctype html>
 <html ng-app="partyApp">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
-    <title>Party!</title>
+		<title>Party!</title>
 
-    <link href="vendors/bootstrap.min.css" rel="stylesheet">
-    <link href="style.css" rel="stylesheet">
-
-    <script type="text/javascript" src="/mopidy/mopidy.min.js"></script>
-    <script type="text/javascript" src="vendors/angular.min.js"></script>
-    <script type="text/javascript" src="controller.js"></script>
+		<link href="vendors/bootstrap.min.css" rel="stylesheet">
+		<link href="style.css" rel="stylesheet">
+	 
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+		<script type="text/javascript" src="/mopidy/mopidy.min.js"></script>
+		<script type="text/javascript" src="vendors/angular.min.js"></script>
+		<script type="text/javascript" src="controller.js"></script>
   </head>
-  <body ng-controller="MainController">
-    <div class="container-fluid" style="margin-top:20px">
-      <div class="row">
-        <div class="col-xs-4">
-          <button type="button" class="btn" ng-click="togglePause()" ng-disabled="!ready" ng-class="{'btn-success' : currentState.paused, 'btn-danger': !currentState.paused}">
-            <span class="glyphicon glyphicon-pause" ng-class="{'glyphicon-play': currentState.paused, 'glyphicon-pause' : !currentState.paused}"></span>
-          </button>
-          <button type="button" class="btn btn-primary" ng-click="vote_negatif()" ng-disabled="!ready">
-            <span class="glyphicons glyphicons-thumbs-down"></span>
-          </button>
-          <button type="button" class="btn" class="btn btn-primary" ng-click="vote_positif()" ng-disable="!ready">
-            <span class="glyphicons glyphicons-thumbs-up"></span>
-          </button>
-          <p><small>
-            <span class="glyphicon glyphicon-equalizer" ng-if="currentState.length  >  0"></span>
-            <span class="glyphicon glyphicon-alert"     ng-if="currentState.length === 0"></span>
-            {{ currentState.length }} track{{ currentState.length > 1 ? 's' : '' }}
-          </small></p>
-        </div>
-        <div class="col-xs-8">
-          <div class="well well-sm">
-            {{ currentState.track.name }} <small>{{ printDuration(currentState.track) }}</small>
-          </div>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-xs-12">
-          <form ng-submit="search()">
-            <input type="text" role="search" class="form-control" placeholder="Search..." ng-model="searchField" ng-disabled="!ready">
-          </form>
-          <div ng-show="loading" class="container-fluid">
-            <p><span class="glyphicon glyphicon-hourglass"></span> Loading...</p>
-          </div>
-        </div>
-      </div>
+	
+	<div class="row" id="playing">
+		<div class="col-xs-4" >
+			<b><font color="white">En lecture : </font></b> 
+		</div>
+	<div class="col-xs-8" >
+		<marquee direction="left" behavior="alternate" scrollamount="2"><font color="white">{{ currentState.track.name }} <small>{{ printDuration(currentState.track) }}</small></font></marquee>
+	</div>
+	</div>
 
-      <div class="alert" role="alert" ng-show="message.length" ng-class="{'alert-success' : (message[0] == 'success'), 'alert-danger' : (message[0] == 'error')}">
-        {{ message[1] }}
-      </div>
+	<body ng-controller="MainController">
+		
+		<div class="container-fluid" id="tabs">
+			<div class="row">
+				<div class="col-xs-12">	
+					<ul class="nav nav-pills nav-justified">
+						<li class="active"><a data-toggle="pill" href="#recherche">Recherche</a></li>
+						<li><a data-toggle="pill" href="#playlist">Playlist</a></li>
+					</ul>
+				</div>
+			</div>
+		
+			<div class="tab-content">
+				
+				<div id="recherche" class="tab-pane fade in active">
+					<div class="row">
+						<div class="col-xs-12" id="searchResult" >
+							<form ng-submit="search()">
+								<div class="input-group">
+									<input type="text" role="search"  class="form-control" placeholder="Recherchez..." ng-model="searchField" ng-disabled="!ready">
+									<span class="input-group-btn">
+										<button class="btn btn-default" type="submit">
+											<span class="glyphicon glyphicon-search"></span>
+										</button>
+									</span>
+								</div>
+							</form>
+							
+							<div ng-show="loading" class="container-fluid" >
+								<p><span class="glyphicon glyphicon-hourglass"></span> Chargement...</p>
+							</div>
+						</div>
+					</div>
+					
+					<div class="alert" role="alert" ng-show="message.length" ng-class="{'alert-success' : (message[0] == 'success'), 'alert-danger' : (message[0] == 'error')}">
+						{{ message[1] }}
+					</div>
+					
+					<ul class="list-group" id="results">
+						<li class="list-group-item" ng-repeat="track in tracks">
+							<button type="button" class="btn btn-xs btn-success add-button" ng-click="addTrack(track)" ng-disabled="track.disabled">
+								<span class="glyphicon glyphicon-play" ng-if="!track.disabled"></span>
+								<span class="glyphicon glyphicon-ok"   ng-if="track.disabled"></span>
+							</button>
+							<a class="fill-div" ng-click="addTrack(track)">{{ track.name }}<br>
+								<small>{{ printDuration(track) }}</small>
+							</a>
+						</li>
+					</ul>
+				</div>
+			
+				<div id="playlist" class="tab-pane fade">
+					<ul class="list-group">
+						<li class="list-group-item" ng-repeat="tltrack in tltracks">
+							{{ tltrack }} <small>{{ printDuration(tltrack) }}</small>
+							<button type="button" class="btn btn-xs btn-danger pull-right" data-toggle="modal" data-target="#myModal" ng-click="notifyMe()" ng-disabled="!trackvote">
+								<span class="glyphicon glyphicon-trash"></span>
+							</button>
+						</li>
+					</ul>
+				</div>
+			</div>
+		
+		</div>
 
-      <ul class="list-group" style="margin-top:20px">
-        <li class="list-group-item" ng-repeat="track in tracks">
-          <button type="button" class="btn btn-xs btn-success add-button" ng-click="addTrack(track)" ng-disabled="track.disabled">
-            <span class="glyphicon glyphicon-play" ng-if="!track.disabled"></span>
-            <span class="glyphicon glyphicon-ok"   ng-if="track.disabled"></span>
-          </button>
-          {{ track.name }} <small>{{ printDuration(track) }}</small><br>
-          <small>
-            {{ track.album.name }}
-            <span ng-if="track.artists">by</span>
-            <span ng-repeat="artist in track.artists">
-              <span ng-if="!$first"> & </span>
-              {{ artist.name }}
-            </span>
-          </small>
-        </li>
-      </ul>
-    </div>
-  </body>
+		<!-- Modal -->
+<div id="myModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+		<div id="myCarousel" class="carousel slide" data-ride="carousel" data-interval="false">
+		
+			<ol class="carousel-indicators">
+				<li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+				<li data-target="#myCarousel" data-slide-to="1"></li>
+			</ol>
+			
+			 <div class="carousel-inner" role="listbox">
+				 <div class="item active">
+					 <div class="modal-content">
+						 <div class="modal-header">
+							 <h4 class="modal-title">Vote en cours - {{timevote}}s restantes</h4>
+							 <div class="progress">
+								 <div class="progress-bar progress-bar-striped active" role="progressbar"
+   aria-valuemin="0" aria-valuemax="100" style="width: 100%">
+								 </div>
+							 </div>
+						 </div>
+						 
+						 <div class="modal-body" >
+							 <div class="row">
+								 <div class="col-sm-6">
+									 <h1>Votez pour</h1><br>
+									 <button type="button" class="btn btn-lg btn-success" ng-click="votePositif">
+										 <span class="glyphicon glyphicon-thumbs-up"></span>
+									 </button>
+								 </div>
+								 <div class="col-sm-6">
+									 <h1>Votez contre</h1><br>
+									 <button type="button" class="btn btn-lg btn-danger">
+										 <span class="glyphicon glyphicon-thumbs-down"></span>
+									 </button>
+								 </div>
+							 </div>
+						 </div>
+
+					 </div>
+				 </div>
+
+				 <div class="item">
+					 <div class="modal-content">
+						 <div class="modal-header">
+							 <h4 class="modal-title">Vote terminé </h4>
+						 </div>
+						 
+						 <div class="modal-body" >Trop tard
+							 <div class="row">
+								 <div class="col-sm-6">
+									 <h1>Votez pour</h1><br>
+									 <button type="button" class="btn btn-lg btn-success disabled">
+										 <span class="glyphicon glyphicon-thumbs-up"></span>
+									 </button>
+								 </div>
+								 <div class="col-sm-6">
+									 <h1>Votez contre</h1><br>
+									 <button type="button" class="btn btn-lg btn-danger disabled">
+										 <span class="glyphicon glyphicon-thumbs-down"></span>
+									 </button>
+								 </div>
+							 </div>
+						 </div>
+				 </div>
+			</div>
+		</div>
+		
+
+</div>
+		
+	</body>
 </html>

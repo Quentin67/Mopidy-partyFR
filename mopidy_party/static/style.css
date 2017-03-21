@@ -1,4 +1,94 @@
+@media (max-width: 768px) {
+  .nav-justified > li {
+    display: table-cell;
+    width: 1%;
+  }
+  .nav-justified > li > a  {
+    border-bottom: 0px solid #333 !important;
+    border-radius: 12px 12px 0 0 !important;
+    margin-bottom: 0 !important;
+  }
+}
+
+body {
+    overflow-x: hidden;
+    margin: 0;
+	background-color: #333;
+}
+
+#playing {
+	background-color: #337AB7;
+	border-radius: 7px;
+	margin:10px 15px 0 15px;
+}
+
+#recherche  {
+	background-color: #337AB7;
+	border-radius: 0 0 12px 12px;
+}
+
+#searchResult {
+	margin-top: 5px;
+	color: white;
+}
+
+#tabs {
+	margin-top: 15px;
+}
+
+#results {
+	margin-top: 20px;
+}
+
 .add-button {
   float: left;
-  margin: 10px 10px 10px 0px;
+  margin: 10px 10px 0 0;
+}
+
+.nav {
+	background-color: #474747;
+	border-radius: 12px 12px 0 0;
+	text-align: center;
+}
+
+.nav-pills {
+	font-weight: bold;
+}
+
+.list-group-item {
+	background-color: #337AB7;
+	border: 0px solid #2e6da4;
+	color: #ffffff;
+}
+
+.input-group {
+	margin-top: 10px;
+}
+
+.modal-content {
+	text-align: center;
+}
+
+.nav-pills > li.active > a {
+	background-color: #337AB7;
+	border-radius: 12px 12px 0 0 ;
+	
+}
+	
+a:focus{
+	outline: none;
+	background-color: #337AB7;
+}
+
+.btn.btn-default:focus{
+	outline: none;
+	box-shadow: none;
+}
+
+a.fill-div {
+    display: block;
+    height: 100%;
+    width: 100%;
+    text-decoration: none;
+	color: #ffffff
 }
