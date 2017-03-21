@@ -6,7 +6,7 @@ import tornado.web
 
 from mopidy import config, ext
 
-__version__ = '0.2.0'
+__version__ = '0.2.1'
 
 
 class PartyRequestHandler(tornado.web.RequestHandler):
@@ -35,7 +35,7 @@ class PartyRequestHandler(tornado.web.RequestHandler):
                 self.core.playback.next()
                 self.write("Changement de musique...")
             else:
-                self.write("Vous avez vote pour passer cette musique.")
+                self.write("Vous avez vote pour garder cette musique.")
 
 
 
