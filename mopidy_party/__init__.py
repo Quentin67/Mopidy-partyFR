@@ -22,7 +22,7 @@ class PartyRequestHandler(tornado.web.RequestHandler):
         if (currentTrack == None): return
         currentTrackURI = currentTrack.uri
 
-        # If the current track is different to the one stored, clear votes
+        # Si la musique jouee est differente de celle enregistree, effacer les votes
         if (currentTrackURI != self.dataPositif["track"]):
             self.dataPositif["track"] = currentTrackURI
             self.dataPositif["votes_positifs"] = []
